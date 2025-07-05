@@ -1,5 +1,5 @@
 <div align="center">
-  <h1>📁 lume-backend</h1>
+  <h1>📁 LumeBackEnd</h1>
 </div>
 
 ---
