@@ -57,9 +57,8 @@ public class AuthController {
 		}
 
 		final UserDetails userDetails = userDetailsService.loadUserByUsername(loginRequest.email());
-		final String jwt = jwtUtil.generateToken(userDetails);
+		final String jwt = jwtUtil.generateToken(userDetails.getUsername());
 		final Date expirationDate = jwtUtil.extractExpiration(jwt);
-
 		final User user = userRepository.findByEmail(loginRequest.email())
 				.orElseThrow(() -> new Exception("Utilizador não encontrado após autenticação"));
 

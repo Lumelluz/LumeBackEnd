@@ -1,31 +1,28 @@
 package br.com.lume.lumemarketplace.config.crypto;
 
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
+import jakarta.persistence.AttributeConverter;
+import jakarta.persistence.Converter;
+import javax.crypto.Cipher;
+import javax.crypto.spec.SecretKeySpec;
 import java.nio.charset.StandardCharsets;
 import java.security.Key;
 import java.time.LocalDate;
 import java.util.Base64;
 
-import javax.crypto.Cipher;
-import javax.crypto.spec.SecretKeySpec;
-
-import jakarta.persistence.AttributeConverter;
-import jakarta.persistence.Converter;
-
-@Converter(autoApply = false)
+@Component
+@Converter
 public class LocalDateEncryptor implements AttributeConverter<LocalDate, String> {
 
     private static final String AES = "AES";
-    private static final String SECRET = System.getenv("ENCRYPTION_KEY") != null
-        ? System.getenv("ENCRYPTION_KEY")
-        : "LumeKey16Chars!!";
+    private final Key key;
 
-    private static final Key key;
-
-    static {
-        if (SECRET.length() != 16 && SECRET.length() != 24 && SECRET.length() != 32) {
-            throw new IllegalArgumentException("Chave inválida");
+    public LocalDateEncryptor(@Value("${encryption.key}") String secret) {
+        if (secret == null || (secret.length() != 16 && secret.length() != 24 && secret.length() != 32)) {
+            throw new IllegalArgumentException("A chave de criptografia deve ser definida e ter 16, 24 ou 32 caracteres.");
         }
-        key = new SecretKeySpec(SECRET.getBytes(StandardCharsets.UTF_8), AES);
+        this.key = new SecretKeySpec(secret.getBytes(StandardCharsets.UTF_8), AES);
     }
 
     @Override
@@ -51,8 +48,7 @@ public class LocalDateEncryptor implements AttributeConverter<LocalDate, String>
             String decrypted = new String(cipher.doFinal(Base64.getDecoder().decode(dbData)), StandardCharsets.UTF_8);
             return LocalDate.parse(decrypted);
         } catch (Exception e) {
-            System.err.println("Erro ao descriptografar data: " + e.getMessage());
-            return null;
+            throw new IllegalStateException("Erro ao descriptografar data", e);
         }
     }
 }
