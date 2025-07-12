@@ -1,12 +1,12 @@
 <div align="center">
-  <h1>📁 lume-backend</h1>
+  <h1>📁 Back-end da Lume</h1>
 </div>
 
 ---
 
 ## 📖 Descrição
 
-**Lume-backend** é a API REST responsável pela lógica do marketplace sustentável Lume, que conecta compradores a empresas que vendem produtos ecológicos.  
+**Lume Back-end** é a API REST responsável pela lógica do marketplace sustentável Lume, que conecta compradores a empresas que vendem produtos ecológicos.  
 Desenvolvido em Java com Spring Framework, o back-end gerencia autenticação segura com JWT, encriptação de dados e persistência em MySQL.
 
 ---
